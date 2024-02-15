@@ -1,4 +1,7 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+
+## Webacy Blast Submission
+
+Safe Swap UI portion of the Blast submission. This Swap UI will be used with Webacy Blast swap contracts, to enable whitelisted access on verified accounts. Accounts are verified using Webacy's EOA and after passing our Risk Score to ensure the accounts are 1. Human, and 2. safe actors.
 
 ## Getting Started
 
