@@ -2,7 +2,7 @@
 
 import Input from "./Input";
 import SafeSwapLogo from "./SafeSwapLogo";
-import { VscAdd, VscChevronDown, VscTriangleDown } from "react-icons/vsc";
+import { VscAdd, VscChevronDown, VscTriangleDown, VscWarning } from "react-icons/vsc";
 import BlastLogo from "./BlastLogo";
 import ConnectButton from "./ConnectButton";
 import { Partners } from "./Partners";
@@ -12,11 +12,25 @@ import { IoSwapVerticalSharp } from "react-icons/io5";
 import Spinner from "./Spinner";
 import Account from "./Account";
 import SignButton from "./SignButton";
+import { useAccount } from "wagmi";
+import Link from "next/link";
 
 export default function Home() {
+  const { address, isConnected } = useAccount();
+  const [isDefinitelyConnected, setIsDefinitelyConnected] = useState(false);
+
+  useEffect(() => {
+    if (isConnected) {
+      setIsDefinitelyConnected(true);
+    } else {
+      setIsDefinitelyConnected(false);
+    }
+  }, [isConnected]);
+
   const [loading, setLoading] = useState<boolean>(false);
   const [fromValue, setFromValue] = useState<number | undefined>();
   const [toValue, setToValue] = useState<number | undefined>();
+  const [safeHuman, setSafeHuman] = useState<boolean>(false);
   useEffect(() => {
     if (fromValue) {
       setLoading(true);
@@ -26,6 +40,20 @@ export default function Home() {
       }, 1000);
     }
   }, [fromValue, toValue])
+
+  useEffect(() => {
+    const random = Math.random();
+    if (random > 0.5) {
+      setSafeHuman(true);
+    } else {
+      setSafeHuman(false);
+    }
+  }, []);
+
+  const renderLabel = () => {
+    if (!safeHuman) return 'Ineligible for Swap';
+    return !toValue ? 'Enter Amount' : 'Swap'
+  }
 
   return (
     <main className="flex min-h-screen flex-col items-center justify-center gap-6 p-6 md:p-24 bg-gradient-to-b bg-black from-black to-yellow-200/10">
@@ -87,10 +115,32 @@ export default function Home() {
             </div>
           )}
         </div>
-        <Account />
+        <Account safeHuman={safeHuman} />
+        {isDefinitelyConnected && !safeHuman && (
+          <div className="border border-red-400 text-red-400 p-3">
+            <div className="space-y-3">
+              <p>
+                <VscWarning className="text-2xl" />
+              </p>
+              <p>
+                This address is not eligible for Webacy SafeSwap because of any of the following reasons:
+              </p>
+              <ol>
+                <li>1. Too new to verify</li>
+                <li>2. Too inactive to verify</li>
+                <li>3. Is a non-human address</li>
+                <li>4. Has been identified as being involved in nefarious activity</li>
+              </ol>
+              <p>Please connect a different wallet or try swapping again after getting more active on Ethereum.</p>
+              <p className="text-right">
+                <Link href={`https://webacy-dapp-staging.vercel.app/blast/${address}`} className="text-yellow-200 underline">Find Out More</Link>
+              </p>
+            </div>
+          </div>
+        )}
         <SignButton
-          label={!toValue ? 'Enter Amount' : 'Swap'}
-          disabled={!toValue}
+          label={renderLabel()}
+          disabled={!toValue && !safeHuman}
           amount={toValue}
         />
       </div>
