@@ -1,112 +1,101 @@
+'use client';
+
+import Input from "./Input";
+import SafeSwapLogo from "./SafeSwapLogo";
+import { VscAdd, VscChevronDown, VscTriangleDown } from "react-icons/vsc";
+import BlastLogo from "./BlastLogo";
+import ConnectButton from "./ConnectButton";
+import { Partners } from "./Partners";
 import Image from "next/image";
+import { useEffect, useState } from "react";
+import { IoSwapVerticalSharp } from "react-icons/io5";
+import Spinner from "./Spinner";
+import Account from "./Account";
+import SignButton from "./SignButton";
 
 export default function Home() {
-  return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-24">
-      <div className="z-10 max-w-5xl w-full items-center justify-between font-mono text-sm lg:flex">
-        <p className="fixed left-0 top-0 flex w-full justify-center border-b border-gray-300 bg-gradient-to-b from-zinc-200 pb-6 pt-8 backdrop-blur-2xl dark:border-neutral-800 dark:bg-zinc-800/30 dark:from-inherit lg:static lg:w-auto  lg:rounded-xl lg:border lg:bg-gray-200 lg:p-4 lg:dark:bg-zinc-800/30">
-          Get started by editing&nbsp;
-          <code className="font-mono font-bold">app/page.tsx</code>
-        </p>
-        <div className="fixed bottom-0 left-0 flex h-48 w-full items-end justify-center bg-gradient-to-t from-white via-white dark:from-black dark:via-black lg:static lg:h-auto lg:w-auto lg:bg-none">
-          <a
-            className="pointer-events-none flex place-items-center gap-2 p-8 lg:pointer-events-auto lg:p-0"
-            href="https://vercel.com?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            By{" "}
-            <Image
-              src="/vercel.svg"
-              alt="Vercel Logo"
-              className="dark:invert"
-              width={100}
-              height={24}
-              priority
-            />
-          </a>
-        </div>
-      </div>
+  const [loading, setLoading] = useState<boolean>(false);
+  const [fromValue, setFromValue] = useState<number | undefined>();
+  const [toValue, setToValue] = useState<number | undefined>();
+  useEffect(() => {
+    if (fromValue) {
+      setLoading(true);
+      setTimeout(() => {
+        setToValue(fromValue)
+        setLoading(false);
+      }, 1000);
+    }
+  }, [fromValue, toValue])
 
-      <div className="relative flex place-items-center before:absolute before:h-[300px] before:w-full sm:before:w-[480px] before:-translate-x-1/2 before:rounded-full before:bg-gradient-radial before:from-white before:to-transparent before:blur-2xl before:content-[''] after:absolute after:-z-20 after:h-[180px] after:w-full sm:after:w-[240px] after:translate-x-1/3 after:bg-gradient-conic after:from-sky-200 after:via-blue-200 after:blur-2xl after:content-[''] before:dark:bg-gradient-to-br before:dark:from-transparent before:dark:to-blue-700 before:dark:opacity-10 after:dark:from-sky-900 after:dark:via-[#0141ff] after:dark:opacity-40 before:lg:h-[360px] z-[-1]">
-        <Image
-          className="relative dark:drop-shadow-[0_0_0.3rem_#ffffff70] dark:invert"
-          src="/next.svg"
-          alt="Next.js Logo"
-          width={180}
-          height={37}
-          priority
+  return (
+    <main className="flex min-h-screen flex-col items-center justify-center gap-6 p-6 md:p-24 bg-gradient-to-b bg-black from-black to-yellow-200/10">
+      <div className="gap-3 flex flex-col items-center">
+        <SafeSwapLogo />
+        <VscAdd />
+        <BlastLogo />
+      </div>
+      <div className="text-yellow-200 text-center text-xl font-thin">
+        Free Swaps and 0.1% cash-back for <strong>Safe Humans 🚶‍♂️🚶‍♀️</strong>
+        <br />On the world’s only native yield Ethereum L2
+      </div>
+      <div className="max-w-screen-sm w-full flex gap-6 flex-col">
+        <div className="space-y-3">
+          <div className="text-yellow-200 inline-flex gap-2 items-center text-xs border border-yellow-200/20 rounded px-2 py-1">
+            Ethereum
+            <Image alt="ethereum" src="/network_icons/ethereum.png" height="14" width="14" className="rounded-full" />
+            <VscChevronDown />
+          </div>
+          <div className="relative">
+            <Input color="yellow" placeholder="0.0" value={fromValue} onChange={
+              (changedValue: number) => {
+                setFromValue(changedValue);
+              }}
+            />
+            <div className="bg-yellow-200/10 w-auto px-3 py-2 absolute right-1 top-1 rounded flex gap-3 items-center">
+              USDC
+              <Image alt="usdc" src="/currency_icons/usdc.jpeg" width="20" height="20" className="rounded-full" />
+            </div>
+          </div>
+        </div>
+        <div className="flex items-center justify-center text-3xl">
+          <IoSwapVerticalSharp className="text-yellow-200" />
+        </div>
+        <div className="space-y-3">
+          <div className="text-yellow-200 inline-flex gap-2 items-center text-xs border border-yellow-200/20 rounded px-2 py-1">
+            Blast
+            <Image alt="ethereum" src="/network_icons/blast_ico.avif" height="14" width="14" className="rounded-full" />
+            <VscChevronDown />
+          </div>
+          <div className="relative">
+            <Input color="yellow" placeholder="0.0" value={toValue} onChange={
+              (changedValue: number) => {
+                setToValue(changedValue)}
+            } />
+            <div className="bg-yellow-200/10 w-auto px-3 py-2 absolute right-1 top-1 rounded flex gap-3 items-center">
+              USDB
+              <Image alt="usdc" src="/currency_icons/blast_ico.avif" width="20" height="20" className="rounded-full" />
+            </div>
+          </div>
+          {loading && (<Spinner className="h-4 w-4" />)}
+          {!loading && toValue && (
+            <div className="text-xs font-mono text-yellow-200 inline-block">
+              {toValue} USDB
+              <br />+{toValue && toValue * 0.001} USDB (deposited on Blast only)
+              <br />
+              <div className="border-b border-b-yellow-200 my-2" />
+              {toValue && toValue * 1.001} USDB (+{toValue && toValue * .041} USDB/4.1% APY on Blast only)
+            </div>
+          )}
+        </div>
+        <Account />
+        <SignButton
+          label={!toValue ? 'Enter Amount' : 'Swap'}
+          disabled={!toValue}
+          amount={toValue}
         />
       </div>
-
-      <div className="mb-32 grid text-center lg:max-w-5xl lg:w-full lg:mb-0 lg:grid-cols-4 lg:text-left">
-        <a
-          href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Docs{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Find in-depth information about Next.js features and API.
-          </p>
-        </a>
-
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Learn{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Learn about Next.js in an interactive course with&nbsp;quizzes!
-          </p>
-        </a>
-
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Templates{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Explore starter templates for Next.js.
-          </p>
-        </a>
-
-        <a
-          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Deploy{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50 text-balance`}>
-            Instantly deploy your Next.js site to a shareable URL with Vercel.
-          </p>
-        </a>
+      <div className="border-t border-t-white/10 items-center justify-center pt-3 mt-6">
+        <Partners />
       </div>
     </main>
   );
