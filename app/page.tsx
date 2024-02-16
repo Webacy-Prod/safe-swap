@@ -140,7 +140,7 @@ export default function Home() {
         )}
         <SignButton
           label={renderLabel()}
-          disabled={!toValue && !safeHuman}
+          disabled={!toValue || !safeHuman}
           amount={toValue}
         />
       </div>
